@@ -2,7 +2,7 @@
 
 NOTE: I made this only with the IntelliJ IDE in mind. If your terminal doesn't support ANSI colors, it's going to look weird at points.
 
-__To run the game, you simply need the java files in src and the stlib.jar library__
+__To run the game, you simply need the java files in src and the stlib.jar library. It was built using java version 21.0.2__
 
 The .iml has some junit things in there, which I'm not sure how to remove but that is definitely not required.
 
