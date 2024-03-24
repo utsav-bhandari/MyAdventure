@@ -203,7 +203,7 @@ public class MyAdventure {
                         "he awaits challengers at the precipice of twilight's embrace.\n"));
 
         // The player starts in the entrance with their fists
-        currentRoom = entrance;
+        currentRoom = r16;
         player.setCurrentWeapon(player.getArsenal().get(0));
         Util.myPrintln("\nExtend the terminal to cover the entire screen for the best experience!\nGOOD LUCK!\n");
         Util.myPrintln("\n\nYour starting Stats:");
@@ -220,11 +220,9 @@ public class MyAdventure {
             Util.myPrint("> ");
             handleCommand(StdIn.readLine());
             Util.myPrintln();
-            if (currentRoom.getMonster() != null) {
-                if ((currentRoom.getMonster().getName().equals("Duskborne Archlich") && currentRoom.getMonster().isDead())) {
+            if (currentRoom.getMonster() == null && currentRoom.getName().equals("Chamber of the Duskborne Archlich")) {
                     Util.printWinMessage();
                     System.exit(0);
-                }
             }
         }
     }
@@ -796,7 +794,7 @@ public class MyAdventure {
         boolean gromEncounter = false;
         boolean spiderEncounter = false;
         boolean bossEncounter = false;
-        int bossTurnCounter = 0;
+        int bossTurnCounter = -1;
 
         // Grom in room
         if (currentRoom.getMonster().getName().equals("Grom")) {
@@ -816,9 +814,14 @@ public class MyAdventure {
         if (currentRoomMonster.getName().equals("Duskborne Archlich")) {
             bossEncounter = true;
             Util.printBossImage();
-            Util.myPrintln("\nYOU HAVE ENGAGED IN COMBAT WITH " + currentRoomMonster.getName() + ", THERE IS TRULY NO GOING BACK!\n");
+            Util.myPrintln("\nYOU HAVE ENGAGED IN COMBAT WITH " + currentRoomMonster.getName().toUpperCase() + ", THERE IS TRULY NO GOING BACK!\n");
             Util.myPrintln("-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-\n");
             if (player.hasHilt()) {
+                try {
+                    Thread.sleep(5000);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
                 Util.myPrintln("As you face the boss, a sudden realization dawns upon you.");
                 Util.myPrintln("You gaze upon the hilt you once thought to be unassuming,");
                 Util.myPrintln("now pulsating with an otherworldly energy.");
@@ -855,7 +858,7 @@ public class MyAdventure {
         }
         // monster has higher agility
         else {
-            Util.myPrintln("You are slower, " + currentRoomMonster.getName() + " moves first!\n");
+            Util.myPrintln("\nYou are slower, " + currentRoomMonster.getName() + " moves first!\n");
             playerTakesTheLead = false;
         }
 
@@ -864,27 +867,22 @@ public class MyAdventure {
             // boss fight combat
             if (bossEncounter) {
                 bossTurnCounter += 1;
-                Util.myPrintln("\nNOTE: YOU ARE INFLICTED WITH THE ARCHLICH'S CURSE!");
-                Util.myPrintln("CURSE DESCRIPTION: ");
-                Util.myPrintln("YOU ONLY HAVE " + (7 - bossTurnCounter) + " TURNS TO DEFEAT HIM BEFORE YOU PERISH!");
-                Util.myPrintln("YOU SOUL IS BEING DIMINISHED PER TURN! YOU ARE LOSING HEALTH!");
                 player.takesDamage(player.getDef() + 7);
-                renderPlayerHP();
-                if (player.isDead()) {
+                if (player.isDead() || bossTurnCounter == 6) {
                     Util.myPrintln("\nYOU DIED FROM THE LICH'S CURSE. YOUR SOUL CEASES TO EXIST!");
-                    Util.myPrintln("☠".repeat(23));
-                    Util.myPrintln("☠" + " " + "YOU HAVE PERISHED! GAME OVER..." + " " + "☠");
-                    Util.myPrintln("☠".repeat(23));
-                    Util.myPrintlnAtGameOver();
-                    System.exit(0);
-                } else if (bossTurnCounter == 6) {
-                    Util.myPrintln("\nYOU DIED FROM THE LICH'S CURSE. YOUR SOUL CEASES TO EXIST!");
+                    player.takesDamage(player.getDef() + player.getCurrentHP());
+                    renderPlayerHP();
                     Util.myPrintln("☠".repeat(23));
                     Util.myPrintln("☠" + " " + "YOU HAVE PERISHED! GAME OVER..." + " " + "☠");
                     Util.myPrintln("☠".repeat(23));
                     Util.myPrintlnAtGameOver();
                     System.exit(0);
                 }
+                Util.myPrintln("\nNOTE: YOU ARE INFLICTED WITH THE ARCHLICH'S CURSE!");
+                Util.myPrintln("CURSE DESCRIPTION: ");
+                Util.myPrintln("YOU ONLY HAVE " + (6 - bossTurnCounter) + " TURNS TO DEFEAT HIM BEFORE YOU PERISH!");
+                Util.myPrintln("YOU SOUL IS BEING DIMINISHED PER TURN! YOU ARE LOSING HEALTH!");
+                renderPlayerHP();
             }
 
             // proxy player weapon

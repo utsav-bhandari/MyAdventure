@@ -535,7 +535,7 @@ public class Player {
         Util.myPrintln("-----------------------------------------------------------------------------------------------------");
         Util.myPrintln("Gold: " + this.getGold() + "\uD83E\uDE99 \n-----------");
         Util.myPrintln("Weapons⚔️:\n-----------");
-        Util.myPrintln("Name\uD83C\uDFF7️                        Damage\uD83D\uDCA5                      CritChance\uD83C\uDFAF                  Description\uD83D\uDCDD\n");
+        Util.myPrintln("Name\uD83C\uDFF7️                                 Damage\uD83D\uDCA5                      CritChance\uD83C\uDFAF                  Description\uD83D\uDCDD\n");
         for (Weapon weapon : weapons) {
             String name;
             if (weapon.getID() == this.currentWeapon.getID()) {
@@ -545,9 +545,9 @@ public class Player {
                 name =  weapon.getName();
             }
             String critChance = String.format("%.0f%%", weapon.getCritChance() * 100);
-            Util.myPrintln((((name + " ".repeat(30)).substring(0, 30)
-                    + (int)weapon.getDamage() + "\uD83D\uDCA2" + " ".repeat(30)).substring(0, 60)
-                    + critChance + " ".repeat(30)).substring(0, 90)
+            Util.myPrintln((((name + " ".repeat(40)).substring(0, 40)
+                    + (int)weapon.getDamage() + "\uD83D\uDCA2" + " ".repeat(30)).substring(0, 70)
+                    + critChance + " ".repeat(30)).substring(0, 100)
                     + weapon.getDescription());
         }
 
