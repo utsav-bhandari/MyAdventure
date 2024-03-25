@@ -111,7 +111,7 @@ public class MyAdventure {
         r2.addNeighbor("south", r1);
         r2.addNeighbor("east", r3);
         r2.addNeighbor("west", r5);
-        r2.setWeapon(new Weapon("Dagger", 0.05,10,
+        r2.setWeapon(new Weapon("Dagger", 0.15,10,
                 "It's a sharp dagger with Hobgoblin blood on it.", 102));
 
         r3.addNeighbor("west", r2);
@@ -135,7 +135,7 @@ public class MyAdventure {
         r6.addNeighbor("south", r5);
         r6.addNeighbor("west", r7);
         r6.addNeighbor("north", r8);
-        r6.setMonster(new Monster("Grusk", 15, 45, 45, 9,
+        r6.setMonster(new Monster("Grusk", 15, 35, 35, 9,
                 "He's an orc and a hulking figure exuding intimidation with every step."));
 
         r7.addNeighbor("east", r6);
@@ -174,7 +174,7 @@ public class MyAdventure {
         r12.setSlotMachine(new SlotMachine());
         r12.addShopItems(new Treasure("Health Potion", "\uD83E\uDDEA", "Use to heal yourself. **gulp**", 1), 30);
         r12.addShopItems(new Treasure("Health Potion", "\uD83E\uDDEA", "Use to heal yourself. **gulp**", 1), 30);
-        r12.addShopItems(new Treasure("Greater Health Potion", "⚗️", "use to fill the depths of your empty soul **GULP**", 5), 70);
+        r12.addShopItems(new Treasure("Greater Health Potion", "⚗️", "Use to fill the depths of your empty soul **GULP**", 5), 70);
         r12.addShopItems(new Treasure("Scroll of Piercing Precision", "\uD83D\uDCDC", "Use to unleash a guaranteed critical strike.", 4), 70);
         r12.addShopItems(new Treasure("Scroll of Piercing Precision", "\uD83D\uDCDC", "Use to unleash a guaranteed critical strike.", 4), 70);
         r12.addShopItems(new Weapon("The Ebon Edge", 0.15, 40,
@@ -203,7 +203,7 @@ public class MyAdventure {
                         "he awaits challengers at the precipice of twilight's embrace.\n"));
 
         // The player starts in the entrance with their fists
-        currentRoom = r16;
+        currentRoom = entrance;
         player.setCurrentWeapon(player.getArsenal().get(0));
         Util.myPrintln("\nExtend the terminal to cover the entire screen for the best experience!\nGOOD LUCK!\n");
         Util.myPrintln("\n\nYour starting Stats:");
@@ -242,11 +242,12 @@ public class MyAdventure {
         Util.myPrintln("  use");
         Util.myPrintln("  open chest");
         Util.myPrintln("  spin");
+        Util.myPrintln("  buy");
     }
 
     /** Handles a command read from standard input and returns true if it's a combat command. */
     public boolean handleCommand(String line) {
-        ArrayList<String> commandList  = new ArrayList<>(Arrays.asList("go", "help", "attack", "strike", "north", "look", "take", "equip", "break", "show", "use", "open", "spin"));
+        ArrayList<String> commandList  = new ArrayList<>(Arrays.asList("go", "buy", "help", "attack", "strike", "north", "look", "take", "equip", "break", "show", "use", "open", "spin"));
         String[] words = line.split(" ");
         String command = words[0].toLowerCase();
         if (command.isEmpty()) {
@@ -294,7 +295,7 @@ public class MyAdventure {
             return false;
         } else if (command.trim().equals("equip")) {
             equip();
-            return true;
+            return false;
         } else if (command.trim().equals("take")) {
             take(choice);
         } else if (command.trim().equals("open")) {
@@ -304,6 +305,7 @@ public class MyAdventure {
             return false;
         } else if (command.trim().equals("use")) {
             use();
+            return false;
         } else if (command.trim().equals("buy")) {
             buy();
         } else if (command.trim().equals("spin")) {
@@ -579,7 +581,7 @@ public class MyAdventure {
                     player.removeItemFromInventory(5);
                     return item.getID();
                 } else if (item.getID() == 6) {
-                    int luckIncrement = 15 + (StdRandom.uniformDouble() < 0.3 ? StdRandom.uniformInt(15, 26) : StdRandom.uniformInt(5, 11));
+                    int luckIncrement = 15 + (StdRandom.uniformDouble() < 0.3 ? StdRandom.uniformInt(11, 26) : StdRandom.uniformInt(5, 11));
                     Util.myPrintln("\033[0;35m");
                     Util.myPrintln("-------------------------------------");
                     Util.myPrintln("|     You receive Gleam's blessing  |");
@@ -609,6 +611,7 @@ public class MyAdventure {
                                 Util.myPrintln("-------------------------------------\n");
                                 Util.myPrintln("\033[0m");
                                 player.getArsenal().get(i).addDamage(15);
+                                player.setCurrentWeapon(player.getArsenal().get(i));
                                 player.removeItemFromInventory(3);
                                 renderPlayerAttack();
                                 return item.getID();
@@ -867,7 +870,6 @@ public class MyAdventure {
             // boss fight combat
             if (bossEncounter) {
                 bossTurnCounter += 1;
-                player.takesDamage(player.getDef() + 7);
                 if (player.isDead() || bossTurnCounter == 6) {
                     Util.myPrintln("\nYOU DIED FROM THE LICH'S CURSE. YOUR SOUL CEASES TO EXIST!");
                     player.takesDamage(player.getDef() + player.getCurrentHP());
@@ -881,42 +883,41 @@ public class MyAdventure {
                 Util.myPrintln("\nNOTE: YOU ARE INFLICTED WITH THE ARCHLICH'S CURSE!");
                 Util.myPrintln("CURSE DESCRIPTION: ");
                 Util.myPrintln("YOU ONLY HAVE " + (6 - bossTurnCounter) + " TURNS TO DEFEAT HIM BEFORE YOU PERISH!");
-                Util.myPrintln("YOU SOUL IS BEING DIMINISHED PER TURN! YOU ARE LOSING HEALTH!");
-                renderPlayerHP();
+                Util.myPrintln("YOU SOUL WILL DIMINISH PER TURN! YOU WILL START LOSING HEALTH!");
+                if (bossTurnCounter > 0) {
+                    player.takesDamage(player.getDef() + 7);
+                    renderPlayerHP();
+                }
             }
 
             // proxy player weapon
-            double currentPlayerAttack = player.getCurrentWeapon().getDamage();
+            double currentPlayerAttack;
 
             // player is faster scenario
             if (playerTakesTheLead) {
                 // check for valid combat command
                 while (true) {
+                    currentPlayerAttack = player.getCurrentWeapon().getDamage();
                     Util.myPrintln("What will you do? [> strike] to attack");
                     Util.myPrint("> ");
                     String choice = StdIn.readLine();
-                    // player equips weapon mid-battle
-                    if ((choice.trim().equalsIgnoreCase("equip"))) {
-                        equip();
-                        currentPlayerAttack = player.getCurrentWeapon().getDamage();
-                        // player uses an item mid-battle
-                    } else if (choice.trim().equalsIgnoreCase("use")) {
+                        // player uses a combat item mid-battle
+                    if (choice.trim().equalsIgnoreCase("use")) {
                         int usedItemID = use();
                         if (usedItemID == 0) {
                             // roll magical dice
                             currentPlayerAttack += player.damageAfterMagicalDiceBuff();
                             break;
+
                         } else if (usedItemID == 4) {
                             // scroll of piercing precision
                             currentPlayerAttack += player.useScrollOfPiercingPrecision();
                             break;
-                        } else if (usedItemID == 3) {
-                            currentPlayerAttack = player.getCurrentWeapon().getDamage();
                         } else if (usedItemID == -1) {
                             continue;
                         }
                     }
-                    else { // command other than use
+                    else { // combat unrelated commands
                         if (handleCommand(choice)) {
                             break;
                         }
@@ -1020,31 +1021,27 @@ public class MyAdventure {
                     System.exit(0);
                 } else { // player survives attack
                     while (true) {
+                        currentPlayerAttack = player.getCurrentWeapon().getDamage();
                         Util.myPrintln("What will you do? [> strike] to attack");
                         Util.myPrint("> ");
                         String choice = StdIn.readLine();
-                        // player equips weapon mid-battle
-                        if ((choice.trim().equalsIgnoreCase("equip"))) {
-                            equip();
-                            currentPlayerAttack = player.getCurrentWeapon().getDamage();
-                            // player uses an item mid-battle
-                        } else if (choice.trim().equalsIgnoreCase("use")) {
+                        // player uses a combat item mid-battle
+                        if (choice.trim().equalsIgnoreCase("use")) {
                             int usedItemID = use();
                             if (usedItemID == 0) {
                                 // roll magical dice
                                 currentPlayerAttack += player.damageAfterMagicalDiceBuff();
                                 break;
+
                             } else if (usedItemID == 4) {
                                 // scroll of piercing precision
                                 currentPlayerAttack += player.useScrollOfPiercingPrecision();
                                 break;
-                            } else if (usedItemID == 3) {
-                                currentPlayerAttack = player.getCurrentWeapon().getDamage();
                             } else if (usedItemID == -1) {
-                                    continue;
-                                }
+                                continue;
+                            }
                         }
-                        else { // command other than use
+                        else { // combat unrelated commands
                             if (handleCommand(choice)) {
                                 break;
                             }

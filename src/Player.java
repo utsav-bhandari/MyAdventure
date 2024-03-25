@@ -80,11 +80,11 @@ public class Player {
     public double getDodgechance() {
         // Calculate dodge chance based on luck and agility
         double baseDodgeChance = 0.05; // Base dodge chance
-        double luckFactor = (double) Lck / 40;
-        double agilityFactor = (double) Agt / 60;
+        double luckFactor = Lck / 82; // double of max possible luck
+        double agilityFactor = Agt / 75; // triple of max agility
 
         // Calculate total dodge chance
-        double totalDodgeChance = baseDodgeChance + luckFactor * 0.2 + agilityFactor * 0.3;
+        double totalDodgeChance = baseDodgeChance + luckFactor * 0.2 + agilityFactor * 0.1;
 
         // Ensure dodge chance is within valid range (0 to 1)
         totalDodgeChance = Math.max(0, Math.min(1, totalDodgeChance));
@@ -306,9 +306,9 @@ public class Player {
 
         // Simulate spinning the reels
         double randomNumber = StdRandom.uniformDouble();
-        double luckFactor = this.Lck * 0.01;
+        double luckFactor = this.Lck * 0.001;
 
-        if (randomNumber < 0.025 + luckFactor) { // 2.5% chance of hitting jackpot
+        if (randomNumber < 0.025 + luckFactor) { // 2.5% base chance of hitting jackpot
             Util.myPrintln("\n\033[1;33m-------------------------------------\033[0m");
             Util.myPrintln("\033[1;33m|    🎉🎉🎉   JACKPOT!   🎉🎉🎉    |\033[0m");
             Util.myPrintln("\033[1;33m|                                   |\033[0m");
@@ -316,10 +316,10 @@ public class Player {
             Util.myPrintln("\033[1;33m|        You've won 999 gold!       |\033[0m");
             Util.myPrintln("\033[1;33m-------------------------------------\033[0m\n");
             this.addGold(999);
-        } else if (randomNumber < 0.125 + luckFactor) { // 10% chance of winning a sweet prize
+        } else if (randomNumber < 0.095 + luckFactor) { // 7% base chance of winning a sweet prize
             Util.myPrintln("\033[0;35mYou've won a sweet prize of 50 gold!\033[0m");
             this.addGold(50);
-        } else if (randomNumber < 0.275 + luckFactor) { // 15% chance of winning a small prize
+        } else if (randomNumber < 0.245 + luckFactor) { // 12% base chance of winning a small prize
             Util.myPrintln("\033[0;32mYou've won a small prize of 15 gold!\033[0m");
             this.addGold(15);
         } else {
