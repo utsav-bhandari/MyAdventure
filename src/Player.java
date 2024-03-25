@@ -192,7 +192,7 @@ public class Player {
      */
     public void addGold(int gold) {
         this.gold += gold;
-        Util.myPrintln("Gold: " + this.gold + "\uD83E\uDE99");
+        Utils.myPrintln("Gold: " + this.gold + "\uD83E\uDE99");
     }
 
     /**
@@ -210,7 +210,7 @@ public class Player {
      * @param healValue The amount by which to restore the player's health points.
      */
     public void heals(double healValue) {
-        Util.myPrintln("A surge of vitality fills you.");
+        Utils.myPrintln("A surge of vitality fills you.");
         if (this.currentHP + healValue > maxHP) {
             this.currentHP = maxHP;
         } else {
@@ -249,7 +249,7 @@ public class Player {
                 return;
             }
         }
-        Util.myPrintln("You cannot strip away that which you have no claim to possess.");
+        Utils.myPrintln("You cannot strip away that which you have no claim to possess.");
     }
 
     /**
@@ -264,7 +264,7 @@ public class Player {
                 return;
             }
         }
-        Util.myPrintln("You cannot strip away that which you have no claim to possess.");
+        Utils.myPrintln("You cannot strip away that which you have no claim to possess.");
     }
 
     /**
@@ -279,16 +279,16 @@ public class Player {
         // Create the border string
         String border = new String(new char[borderLength]).replace('\0', borderChar);
 
-        Util.myPrintln(border);
-        Util.myPrintln("* Drink from the well of Vitality? [yes/no] *");
-        Util.myPrintln(border);
-        Util.myPrint("> ");
+        Utils.myPrintln(border);
+        Utils.myPrintln("* Drink from the well of Vitality? [yes/no] *");
+        Utils.myPrintln(border);
+        Utils.myPrint("> ");
         String choice = StdIn.readLine();
         if (choice.equalsIgnoreCase("y") || choice.equalsIgnoreCase("yes")) {
             this.useFountain();
             return true;
         } else {
-            Util.myPrintln("\n...");
+            Utils.myPrintln("\n...");
             return false;
         }
     }
@@ -299,7 +299,7 @@ public class Player {
      */
     public void playSlotMachine() {
         if (gold < 15) {
-            Util.myPrintln("You don't have enough gold to play the slot machine!");
+            Utils.myPrintln("You don't have enough gold to play the slot machine!");
             return;
         }
         this.addGold(-15);
@@ -309,21 +309,21 @@ public class Player {
         double luckFactor = this.Lck * 0.001;
 
         if (randomNumber < 0.025 + luckFactor) { // 2.5% base chance of hitting jackpot
-            Util.myPrintln("\n\033[1;33m-------------------------------------\033[0m");
-            Util.myPrintln("\033[1;33m|    🎉🎉🎉   JACKPOT!   🎉🎉🎉    |\033[0m");
-            Util.myPrintln("\033[1;33m|                                   |\033[0m");
-            Util.myPrintln("\033[1;33m|    💰   Congratulations!   💰     |\033[0m");
-            Util.myPrintln("\033[1;33m|        You've won 999 gold!       |\033[0m");
-            Util.myPrintln("\033[1;33m-------------------------------------\033[0m\n");
+            Utils.myPrintln("\n\033[1;33m-------------------------------------\033[0m");
+            Utils.myPrintln("\033[1;33m|    🎉🎉🎉   JACKPOT!   🎉🎉🎉    |\033[0m");
+            Utils.myPrintln("\033[1;33m|                                   |\033[0m");
+            Utils.myPrintln("\033[1;33m|    💰   Congratulations!   💰     |\033[0m");
+            Utils.myPrintln("\033[1;33m|        You've won 999 gold!       |\033[0m");
+            Utils.myPrintln("\033[1;33m-------------------------------------\033[0m\n");
             this.addGold(999);
         } else if (randomNumber < 0.095 + luckFactor) { // 7% base chance of winning a sweet prize
-            Util.myPrintln("\033[0;35mYou've won a sweet prize of 50 gold!\033[0m");
+            Utils.myPrintln("\033[0;35mYou've won a sweet prize of 50 gold!\033[0m");
             this.addGold(50);
         } else if (randomNumber < 0.245 + luckFactor) { // 12% base chance of winning a small prize
-            Util.myPrintln("\033[0;32mYou've won a small prize of 15 gold!\033[0m");
+            Utils.myPrintln("\033[0;32mYou've won a small prize of 15 gold!\033[0m");
             this.addGold(15);
         } else {
-            Util.myPrintln("\033[0;31mBetter luck next time! Spin again to try your luck.\033[0m");
+            Utils.myPrintln("\033[0;31mBetter luck next time! Spin again to try your luck.\033[0m");
         }
     }
 
@@ -340,35 +340,35 @@ public class Player {
         int magicalDiceRoll = StdRandom.uniformInt(0, 7);
         switch (magicalDiceRoll) {
             case 0:
-                Util.myPrintln("Rolled a 0. No buff!");
+                Utils.myPrintln("Rolled a 0. No buff!");
                 break;
             case 1:
                 playerAttackBuff += currentPlayerAttack * 0.05;
-                Util.myPrintln("Rolled a 1. 5% buff!");
+                Utils.myPrintln("Rolled a 1. 5% buff!");
                 break;
             case 2:
                 playerAttackBuff += currentPlayerAttack * 0.1;
-                Util.myPrintln("Rolled a 2. 10% buff!");
+                Utils.myPrintln("Rolled a 2. 10% buff!");
                 break;
             case 3:
                 playerAttackBuff += currentPlayerAttack * 0.15;
-                Util.myPrintln("Rolled a 3. 15% buff!");
+                Utils.myPrintln("Rolled a 3. 15% buff!");
                 break;
             case 4:
                 playerAttackBuff += currentPlayerAttack * 0.2;
-                Util.myPrintln("Rolled a 4. 20% buff!");
+                Utils.myPrintln("Rolled a 4. 20% buff!");
                 break;
             case 5:
                 playerAttackBuff += currentPlayerAttack * 0.25;
-                Util.myPrintln("Rolled a 5. 25% buff!");
+                Utils.myPrintln("Rolled a 5. 25% buff!");
                 break;
             case 6:
                 // 5% chance for 50% damage boost
                 if (StdRandom.uniformDouble() < 0.3) {
                     playerAttackBuff += currentPlayerAttack * 0.5;
-                    Util.myPrintln("Rolled a 6. 50% buff!!!!");
+                    Utils.myPrintln("Rolled a 6. 50% buff!!!!");
                 } else {
-                    Util.myPrintln("The dice refused to be rolled. Better luck next time...");
+                    Utils.myPrintln("The dice refused to be rolled. Better luck next time...");
                 }
                 break;
         }
@@ -384,7 +384,7 @@ public class Player {
     public double getDamageAfterCritChance() {
         // If weapon crits, 100% damage increase
         if (StdRandom.bernoulli(this.currentWeapon.getCritChance())) {
-            Util.myPrintln("\u001B[1m" + "********CRITICAL STRIKE*********" + "\u001B[0m");
+            Utils.myPrintln("\u001B[1m" + "********CRITICAL STRIKE*********" + "\u001B[0m");
             return this.currentWeapon.getDamage();
         }
         return 0;
@@ -433,13 +433,13 @@ public class Player {
      * Displays the player's statistics including max HP, attack, defense, luck, and agility.
      */
     public void displayStats() {
-        Util.myPrintln("╔═══════════╦═════════╦═════════╦═════════╦═════════╗");
-        Util.myPrint("");
+        Utils.myPrintln("╔═══════════╦═════════╦═════════╦═════════╦═════════╗");
+        Utils.myPrint("");
         StdOut.printf("║   Max HP  ║ Attack  ║ Defense ║ Luck    ║ Agility ║%n");
-        Util.myPrintln("╠═══════════╬═════════╬═════════╬═════════╬═════════╣");
-        Util.myPrint("");
+        Utils.myPrintln("╠═══════════╬═════════╬═════════╬═════════╬═════════╣");
+        Utils.myPrint("");
         StdOut.printf("║ %9.0f ║ %7.0f ║ %7.0f ║ %7.0f ║ %7.0f ║%n", maxHP, Atk, Def, Lck, Agt);
-        Util.myPrintln("╚═══════════╩═════════╩═════════╩═════════╩═════════╝");
+        Utils.myPrintln("╚═══════════╩═════════╩═════════╩═════════╩═════════╝");
     }
 
     /**
@@ -448,9 +448,9 @@ public class Player {
      */
     public void displayWeapons() {
         // Print header
-        Util.myPrintln("Weapons⚔️:");
-        Util.myPrintln("----------");
-        Util.myPrintln("Name\uD83C\uDFF7️                        Damage\uD83D\uDCA5                      CritChance\uD83C\uDFAF                  Description\uD83D\uDCDD\n");
+        Utils.myPrintln("Weapons⚔️:");
+        Utils.myPrintln("----------");
+        Utils.myPrintln("Name\uD83C\uDFF7️                        Damage\uD83D\uDCA5                      CritChance\uD83C\uDFAF                  Description\uD83D\uDCDD\n");
 
         // Print weapons
         for (Weapon weapon : weapons) {
@@ -461,7 +461,7 @@ public class Player {
                 name = (weapon.getName() + " ".repeat(30)).substring(0, 30);
             }
             String formattedOutput = getString(weapon, name);
-            Util.myPrintln(formattedOutput);
+            Utils.myPrintln(formattedOutput);
         }
     }
 
@@ -483,7 +483,7 @@ public class Player {
      * Each item is shown with its name and description.
      */
     public void displayItems() {
-        Util.myPrintln("\nChoose item to use:\n-------------------");
+        Utils.myPrintln("\nChoose item to use:\n-------------------");
         // Find maximum lengths of name and description
         int maxNameLength = 0;
         int maxDescriptionLength = 0;
@@ -506,7 +506,7 @@ public class Player {
 
             // Format the output
             String formattedOutput = String.format("%-" + nameWidth + "s %-" + descriptionWidth + "s", itemName, "  " + itemDescription);
-            Util.myPrintln(formattedOutput);
+            Utils.myPrintln(formattedOutput);
         }
     }
 
@@ -531,11 +531,11 @@ public class Player {
 
     public void displayInventory() {
         // Print header
-        Util.myPrintln("Inventory:");
-        Util.myPrintln("-----------------------------------------------------------------------------------------------------");
-        Util.myPrintln("Gold: " + this.getGold() + "\uD83E\uDE99 \n-----------");
-        Util.myPrintln("Weapons⚔️:\n-----------");
-        Util.myPrintln("Name\uD83C\uDFF7️                                 Damage\uD83D\uDCA5                      CritChance\uD83C\uDFAF                  Description\uD83D\uDCDD\n");
+        Utils.myPrintln("Inventory:");
+        Utils.myPrintln("-----------------------------------------------------------------------------------------------------");
+        Utils.myPrintln("Gold: " + this.getGold() + "\uD83E\uDE99 \n-----------");
+        Utils.myPrintln("Weapons⚔️:\n-----------");
+        Utils.myPrintln("Name\uD83C\uDFF7️                                 Damage\uD83D\uDCA5                      CritChance\uD83C\uDFAF                  Description\uD83D\uDCDD\n");
         for (Weapon weapon : weapons) {
             String name;
             if (weapon.getID() == this.currentWeapon.getID()) {
@@ -545,22 +545,22 @@ public class Player {
                 name =  weapon.getName();
             }
             String critChance = String.format("%.0f%%", weapon.getCritChance() * 100);
-            Util.myPrintln((((name + " ".repeat(40)).substring(0, 40)
+            Utils.myPrintln((((name + " ".repeat(40)).substring(0, 40)
                     + (int)weapon.getDamage() + "\uD83D\uDCA2" + " ".repeat(30)).substring(0, 70)
                     + critChance + " ".repeat(30)).substring(0, 100)
                     + weapon.getDescription());
         }
 
-        Util.myPrintln("---------\nItems\uD83D\uDCE6:\n---------");
-        Util.myPrintln("Name\uD83C\uDFF7️                        Description\uD83D\uDCDD\n");
+        Utils.myPrintln("---------\nItems\uD83D\uDCE6:\n---------");
+        Utils.myPrintln("Name\uD83C\uDFF7️                        Description\uD83D\uDCDD\n");
         for (Treasure item : items) {
-            Util.myPrintln((item.getNameWithEmoji() + " ".repeat(30)).substring(0, 30) + item.getDescription());
+            Utils.myPrintln((item.getNameWithEmoji() + " ".repeat(30)).substring(0, 30) + item.getDescription());
         }
 
-        Util.myPrintln("--------------\nArmorpieces\uD83D\uDEE1️:\n--------------");
-        Util.myPrintln("Name\uD83C\uDFF7️                        Defense\uD83D\uDEE1                     Description\uD83D\uDCDD\n");
+        Utils.myPrintln("--------------\nArmorpieces\uD83D\uDEE1️:\n--------------");
+        Utils.myPrintln("Name\uD83C\uDFF7️                        Defense\uD83D\uDEE1                     Description\uD83D\uDCDD\n");
         for (Armor armor : armorPieces) {
-            Util.myPrintln(((armor.getName() + " ".repeat(30)).substring(0, 30)
+            Utils.myPrintln(((armor.getName() + " ".repeat(30)).substring(0, 30)
                     + (int)armor.getDefValue() + " ".repeat(30)).substring(0, 60)
                     + armor.getDescription());
         }

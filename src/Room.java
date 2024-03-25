@@ -228,13 +228,13 @@ public class Room {
      */
     public void playerOpensChest() {
         int goldInChest = StdRandom.uniformInt(50, 101);
-        Util.myPrintln("You found " + goldInChest + "\uD83E\uDE99 in the chest!");
+        Utils.myPrintln("You found " + goldInChest + "\uD83E\uDE99 in the chest!");
         MyAdventure.player.addGold(goldInChest);
         for (Treasure item : this.getChest().getLoot()) {
-            Util.myPrintln("You also found a " + item.getNameWithEmoji() + ".");
+            Utils.myPrintln("You also found a " + item.getNameWithEmoji() + ".");
             MyAdventure.player.addItem(item);
         }
-        Util.myPrintln("\n***The chest disappears as you finish looting it...***");
+        Utils.myPrintln("\n***The chest disappears as you finish looting it...***");
     }
 
     /**

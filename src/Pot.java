@@ -29,17 +29,17 @@ public class Pot {
      */
     public void breakPot() {
         if (this.healthPotion == null && this.gold == 0) {
-            Util.myPrintln("Nothing inside.");
+            Utils.myPrintln("Nothing inside.");
             return;
         }
         // Provide the health potion to the player if present
         if (this.healthPotion != null) {
-            Util.myPrintln("You found a health potion\uD83E\uDDEA!");
+            Utils.myPrintln("You found a health potion\uD83E\uDDEA!");
             MyAdventure.player.addItem(this.healthPotion);
         }
         // Provide the gold to the player if present
         if (this.gold != 0) {
-            Util.myPrintln("You found " + this.gold + "\uD83E\uDE99 inside!");
+            Utils.myPrintln("You found " + this.gold + "\uD83E\uDE99 inside!");
             MyAdventure.player.addGold(this.gold);
         }
     }

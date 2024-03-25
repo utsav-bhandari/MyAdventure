@@ -87,34 +87,34 @@ public class Shop extends Room {
      * Displays the inventory of the shop, including weapons and items with their prices and descriptions.
      */
     public void displayShopInventory() {
-        Util.myPrintln("\n                                         $$$$$$\\   $$\\  $$\\ $$$$$$\\    $$$$$$\\   ");
-        Util.myPrintln("                                         $$  __$$\\ $$ |  $$ |$$  __$$\\ $$  __$$\\ ");
-        Util.myPrintln("                                         $$ /  \\__|$$ |  $$ |$$ /  $$ | $$ |  $$ |");
-        Util.myPrintln("                                         \\$$$$$$\\ $$$$$$$$ |$$ |   $$ | $$$$$$$  |");
-        Util.myPrintln("                                         \\____$$\\ $$  __ $ |$$ |   $$ | $$  ____/ ");
-        Util.myPrintln("                                         $$\\   $$ |$$ |  $$ |$$ |  $$ | $$ |      ");
-        Util.myPrintln("                                         \\$$$$$$  |$$ |  $$ | $$$$$$  | $$ |      ");
-        Util.myPrintln("                                         \\______/ \\__|  \\__| \\___/ \\__ |  ");
-        Util.myPrintln("                                                                                 ");
+        Utils.myPrintln("\n                                         $$$$$$\\   $$\\  $$\\ $$$$$$\\    $$$$$$\\   ");
+        Utils.myPrintln("                                         $$  __$$\\ $$ |  $$ |$$  __$$\\ $$  __$$\\ ");
+        Utils.myPrintln("                                         $$ /  \\__|$$ |  $$ |$$ /  $$ | $$ |  $$ |");
+        Utils.myPrintln("                                         \\$$$$$$\\ $$$$$$$$ |$$ |   $$ | $$$$$$$  |");
+        Utils.myPrintln("                                         \\____$$\\ $$  __ $ |$$ |   $$ | $$  ____/ ");
+        Utils.myPrintln("                                         $$\\   $$ |$$ |  $$ |$$ |  $$ | $$ |      ");
+        Utils.myPrintln("                                         \\$$$$$$  |$$ |  $$ | $$$$$$  | $$ |      ");
+        Utils.myPrintln("                                         \\______/ \\__|  \\__| \\___/ \\__ |  ");
+        Utils.myPrintln("                                                                                 ");
 
-        Util.myPrintln("Your Gold: " + MyAdventure.player.getGold() + "\uD83E\uDE99 \n-----------");
-        Util.myPrintln("Weapons⚔️:\n----------");
+        Utils.myPrintln("Your Gold: " + MyAdventure.player.getGold() + "\uD83E\uDE99 \n-----------");
+        Utils.myPrintln("Weapons⚔️:\n----------");
         for (int i = 0; i < shopWeapons.size(); i++) {
             Weapon weapon = shopWeapons.get(i);
             int price = weaponPrices.get(i);
             String critChance = String.format("%.0f%%", weapon.getCritChance() * 100);
             if (weapon.getID() == 999) {
                 // Print the best weapon separately
-                Util.myPrintln("\u001B[1m" + "********ELITE WEAPON*********" + "\u001B[0m");
-                Util.myPrintln("Name\uD83C\uDFF7️: \u001B[1m" + weapon.getName() + "\u001B[0m");
-                Util.myPrintln("Damage\uD83D\uDCA5: " + (int) weapon.getDamage() + "\uD83D\uDCA2");
-                Util.myPrintln("CritChance\uD83C\uDFAF: " + critChance);
-                Util.myPrintln("Price\uD83D\uDCB0: " + price + "\uD83E\uDE99");
-                Util.myPrintln("Description\uD83D\uDCDD: " + weapon.getDescription());
-                Util.myPrintln("You might need to spin that wheel to get this one...");
+                Utils.myPrintln("\u001B[1m" + "********ELITE WEAPON*********" + "\u001B[0m");
+                Utils.myPrintln("Name\uD83C\uDFF7️: \u001B[1m" + weapon.getName() + "\u001B[0m");
+                Utils.myPrintln("Damage\uD83D\uDCA5: " + (int) weapon.getDamage() + "\uD83D\uDCA2");
+                Utils.myPrintln("CritChance\uD83C\uDFAF: " + critChance);
+                Utils.myPrintln("Price\uD83D\uDCB0: " + price + "\uD83E\uDE99");
+                Utils.myPrintln("Description\uD83D\uDCDD: " + weapon.getDescription());
+                Utils.myPrintln("You might need to spin that wheel to get this one...");
             }
         }
-        Util.myPrintln("Name\uD83C\uDFF7️                        Damage\uD83D\uDCA5                      CritChance\uD83C\uDFAF                 Price\uD83D\uDCB0                       Description\uD83D\uDCDD\n");
+        Utils.myPrintln("Name\uD83C\uDFF7️                        Damage\uD83D\uDCA5                      CritChance\uD83C\uDFAF                 Price\uD83D\uDCB0                       Description\uD83D\uDCDD\n");
         for (int i = 0; i < shopWeapons.size(); i++) {
             Weapon weapon = shopWeapons.get(i);
             int price = weaponPrices.get(i);
@@ -122,19 +122,19 @@ public class Shop extends Room {
             if (weapon.getID() == 999) {
                 continue;
             }
-            Util.myPrintln(((((weapon.getName() + " ".repeat(30)).substring(0, 30)
+            Utils.myPrintln(((((weapon.getName() + " ".repeat(30)).substring(0, 30)
                     + (int) weapon.getDamage() + "\uD83D\uDCA2" + " ".repeat(30)).substring(0, 60)
                     + critChance + " ".repeat(30)).substring(0, 90)
                     + price + "\uD83E\uDE99" + " ".repeat(30)).substring(0, 120)
                     + weapon.getDescription());
         }
 
-        Util.myPrintln("\nItems\uD83D\uDCE6:\n--------");
-        Util.myPrintln("Name\uD83C\uDFF7️                                  Price\uD83D\uDCB0                          Description\uD83D\uDCDD\n");
+        Utils.myPrintln("\nItems\uD83D\uDCE6:\n--------");
+        Utils.myPrintln("Name\uD83C\uDFF7️                                  Price\uD83D\uDCB0                          Description\uD83D\uDCDD\n");
         for (int i = 0; i < shopItems.size(); i++) {
             Treasure item = shopItems.get(i);
             int price = itemPrices.get(i);
-            Util.myPrintln(((
+            Utils.myPrintln(((
                     item.getNameWithEmoji() + " ".repeat(40)).substring(0, 40)
                     + price + "\uD83E\uDE99" + " ".repeat(30)).substring(0, 70)
                     + item.getDescription());

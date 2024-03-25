@@ -15,6 +15,8 @@ public class MyAdventure {
     /** Combat state */
     private static boolean inCombat = false;
 
+    private final ArrayList<String> commandList  = new ArrayList<>(Arrays.asList("go", "buy", "help", "attack", "strike", "look", "take", "equip", "break", "show", "use", "open", "spin"));
+
     /** Static room for item drop from Grom */
     private static Room r10;
 
@@ -205,23 +207,23 @@ public class MyAdventure {
         // The player starts in the entrance with their fists
         currentRoom = entrance;
         player.setCurrentWeapon(player.getArsenal().get(0));
-        Util.myPrintln("\nExtend the terminal to cover the entire screen for the best experience!\nGOOD LUCK!\n");
-        Util.myPrintln("\n\nYour starting Stats:");
+        Utils.myPrintln("\nExtend the terminal to cover the entire screen for the best experience!\nGOOD LUCK!\n");
+        Utils.myPrintln("\n\nYour starting Stats:");
         player.displayStats();
-        Util.myPrintln("You start with a Magical Dice in your inventory: [> show inv] to see what it does.");
+        Utils.myPrintln("You start with a Magical Dice in your inventory: [> show inv] to see what it does.");
     }
 
     /** Runs the game. */
     public void run() {
         help();
-        Util.myPrintln();
+        Utils.myPrintln();
         while (true) {
-            Util.myPrintln("You are in " + currentRoom.getName() + ".");
-            Util.myPrint("> ");
+            Utils.myPrintln("You are in " + currentRoom.getName() + ".");
+            Utils.myPrint("> ");
             handleCommand(StdIn.readLine());
-            Util.myPrintln();
+            Utils.myPrintln();
             if (currentRoom.getMonster() == null && currentRoom.getName().equals("Chamber of the Duskborne Archlich")) {
-                    Util.printWinMessage();
+                    Utils.printWinMessage();
                     System.exit(0);
             }
         }
@@ -229,33 +231,19 @@ public class MyAdventure {
 
     /** Prints examples of possible commands as a hint to the player. */
     public void help() {
-        Util.myPrintln("Examples of commands:");
-        Util.myPrintln("  help");
-        Util.myPrintln("  attack/attack Grog");
-        Util.myPrintln("  strike");
-        Util.myPrintln("  go north");
-        Util.myPrintln("  look");
-        Util.myPrintln("  take Scroll of flying");
-        Util.myPrintln("  equip");
-        Util.myPrintln("  break pot(\uD83C\uDFFA)");
-        Util.myPrintln("  show inv/stats/shop");
-        Util.myPrintln("  use");
-        Util.myPrintln("  open chest");
-        Util.myPrintln("  spin");
-        Util.myPrintln("  buy");
+        Utils.printHelpCommands();
     }
 
     /** Handles a command read from standard input and returns true if it's a combat command. */
     public boolean handleCommand(String line) {
-        ArrayList<String> commandList  = new ArrayList<>(Arrays.asList("go", "buy", "help", "attack", "strike", "north", "look", "take", "equip", "break", "show", "use", "open", "spin"));
         String[] words = line.split(" ");
         String command = words[0].toLowerCase();
         if (command.isEmpty()) {
-            Util.myPrintln("Enter a command!");
+            Utils.myPrintln("Enter a command!");
             return false;
         }
         if (!commandList.contains(command)) {
-            Util.myPrintln("Not a valid command!");
+            Utils.myPrintln("Not a valid command!");
             return false;
         }
 
@@ -277,11 +265,11 @@ public class MyAdventure {
                         || command.equalsIgnoreCase("show")
                         || command.equalsIgnoreCase("use")
                         || command.equalsIgnoreCase("strike"))) {
-            Util.myPrintln("You can't do that with " + currentRoom.getMonster().getName() + " here.");
+            Utils.myPrintln("You can't do that with " + currentRoom.getMonster().getName() + " here.");
             return false;
         } else if (command.trim().equals("attack")) {
             if (inCombat) {
-                Util.myPrintln("You are already engaged in combat.\n");
+                Utils.myPrintln("You are already engaged in combat.\n");
                 return false;
             }
             attack(choice);
@@ -312,7 +300,7 @@ public class MyAdventure {
             spin();
         } else if (command.trim().equals("strike")) {
             if (!inCombat) {
-                Util.myPrintln("You can only strike enemies while in combat!");
+                Utils.myPrintln("You can only strike enemies while in combat!");
             }
             else {
                 return true;
@@ -320,7 +308,7 @@ public class MyAdventure {
         } else if (command.trim().equals("break")) {
             breakPots(choice);
         } else {
-            Util.myPrintln("Invalid command entered.");
+            Utils.myPrintln("Invalid command entered.");
             return false;
         }
         return true;
@@ -336,7 +324,7 @@ public class MyAdventure {
                 case "Grog","Zephyr", "Ka-boom", "Grusk", "Grom", "Pusblight Crawler", "Brog", "Dreadstone Sentinel", "Duskborne Archlich" -> combat();
             }
         } else {
-            Util.myPrintln("You cannot attack" + name + " or there is no " + name + " here.");
+            Utils.myPrintln("You cannot attack" + name + " or there is no " + name + " here.");
         }
     }
 
@@ -344,7 +332,7 @@ public class MyAdventure {
     public void go(String direction) {
         Room destination = currentRoom.getNeighbor(direction);
         if (destination == null) {
-            Util.myPrintln("You can't go that way from here.");
+            Utils.myPrintln("You can't go that way from here.");
         } else {
             currentRoom = destination;
             look();
@@ -357,54 +345,54 @@ public class MyAdventure {
     /** Prints a description of the current room and its contents. */
     public void look() {
         renderPlayerHP();
-        Util.myPrintln(currentRoom.getDescription()
+        Utils.myPrintln(currentRoom.getDescription()
                 + "\n---------------");
         if (currentRoom.getMonster() != null) {
-            Util.myPrintln(currentRoom.getMonster().getName() + " appears!\n"
+            Utils.myPrintln(currentRoom.getMonster().getName() + " appears!\n"
                     + currentRoom.getMonster().getDescription()
                     + "\n---------------");
             renderMonsterHPAndAttackAndAgility();
 
         }
         if (currentRoom.getWeapon() != null) {
-            Util.myPrintln("There is a "
+            Utils.myPrintln("There is a "
                     + currentRoom.getWeapon().getName() + " here. "
                     + currentRoom.getWeapon().getDescription()
                     + "\n---------------");
         }
         if (currentRoom.getChest() != null) {
-            Util.myPrintln("There is a CHEST here!"
+            Utils.myPrintln("There is a CHEST here!"
                     + "\n---------------");
         }
         if (currentRoom.getArmorPiece() != null) {
-            Util.myPrintln(currentRoom.getArmorPiece().getName() + " here. "
+            Utils.myPrintln(currentRoom.getArmorPiece().getName() + " here. "
                     + currentRoom.getArmorPiece().getDescription()
                     + "\n---------------");
         }
         if (currentRoom.getTreasure() != null) {
-            Util.myPrintln(currentRoom.getTreasure().getNameWithEmoji() + " here. "
+            Utils.myPrintln(currentRoom.getTreasure().getNameWithEmoji() + " here. "
                     + currentRoom.getTreasure().getDescription()
                     + "\n---------------");
         }
         if (currentRoom.getFountain() != null) {
-            Util.myPrintln(currentRoom.getFountain().getDescription()
+            Utils.myPrintln(currentRoom.getFountain().getDescription()
                     + "\n---------------");
         }
         if (currentRoom.getPotSize() != 0) {
             if (currentRoom.getPotSize() > 1) {
-                Util.myPrintln("There are "
+                Utils.myPrintln("There are "
                         + currentRoom.getPotSize() + "\uD83C\uDFFA here."
                         + "\n---------------");
             }
             else {
-                Util.myPrintln("There is a \uD83C\uDFFA here."
+                Utils.myPrintln("There is a \uD83C\uDFFA here."
                         + "\n---------------");
             }
         }
         if (currentRoom.getSlotMachine() != null) {
-            Util.myPrintln("Look! A \uD83C\uDFB0slot machine\uD83C\uDFB0. Spin the wheel!!!");
+            Utils.myPrintln("Look! A \uD83C\uDFB0slot machine\uD83C\uDFB0. Spin the wheel!!!");
         }
-        Util.myPrintln("Exits: " + currentRoom.listExits());
+        Utils.myPrintln("Exits: " + currentRoom.listExits());
     }
 
     /** Attempts to open a chest. */
@@ -415,7 +403,7 @@ public class MyAdventure {
             currentRoom.setChest(null);
         }
         else {
-            Util.myPrintln("You cannot open a " + container + " or there is no chest here.");
+            Utils.myPrintln("You cannot open a " + container + " or there is no chest here.");
         }
     }
 
@@ -425,46 +413,46 @@ public class MyAdventure {
         Weapon weapon = currentRoom.getWeapon();
         Armor armor = currentRoom.getArmorPiece();
         if (treasure != null && treasure.getName().equalsIgnoreCase(name)) {
-            Util.myPrintln("You acquired " + treasure.getNameWithEmoji() + "!");
+            Utils.myPrintln("You acquired " + treasure.getNameWithEmoji() + "!");
             player.addItem(treasure);
             currentRoom.setTreasure(null);
             return;
         }
         if (weapon != null && weapon.getName().equalsIgnoreCase(name)) {
-            Util.myPrintln("You acquired " + weapon.getName() + "!");
+            Utils.myPrintln("You acquired " + weapon.getName() + "!");
             if (weapon.getName().equals("hilt")) {
-                Util.myPrintln("I might want to equip that...");
+                Utils.myPrintln("I might want to equip that...");
             }
             player.addItem(weapon);
             currentRoom.setWeapon(null);
             return;
         }
         if (armor != null && armor.getName().equalsIgnoreCase(name)) {
-            Util.myPrintln("You acquired " + armor.getName() + "!");
-            Util.myPrintln("Def\uD83D\uDEE1 +" + (int)armor.getDefValue());
+            Utils.myPrintln("You acquired " + armor.getName() + "!");
+            Utils.myPrintln("Def\uD83D\uDEE1 +" + (int)armor.getDefValue());
             player.addItem(armor, armor.getDefValue());
             currentRoom.setArmor(null);
             return;
         }
-        Util.myPrintln("You cannot take a " + name + " or it does not exist here.");
+        Utils.myPrintln("You cannot take a " + name + " or it does not exist here.");
     }
 
     /** Equip weapon if player possesses it. */
     public void equip() {
-        Util.myPrintln("\nChoose weapon to equip?");
+        Utils.myPrintln("\nChoose weapon to equip?");
         player.displayWeapons();
-        Util.myPrint("> ");
+        Utils.myPrint("> ");
         String choice = StdIn.readLine();
         for (int i = 0; i < player.getArsenal().size(); i++) {
             // If weapon is in inv
             if (choice.equalsIgnoreCase(player.getArsenal().get(i).getName())) {
                 player.setCurrentWeapon(player.getArsenal().get(i));
-                Util.myPrintln("You equipped " + choice + "!");
-                Util.myPrintln("Atk⚔️ " + (int)player.getCurrentWeapon().getDamage());
+                Utils.myPrintln("You equipped " + choice + "!");
+                Utils.myPrintln("Atk⚔️ " + (int)player.getCurrentWeapon().getDamage());
                 return;
             }
         }
-        Util.myPrintln("You do not possess " + choice + ".");
+        Utils.myPrintln("You do not possess " + choice + ".");
     }
 
     /** Show Shop if in one, inventory, or stats of the player */
@@ -474,14 +462,14 @@ public class MyAdventure {
                 ((Shop) currentRoom).displayShopInventory();
             }
             else {
-                Util.myPrintln("You need to be in a shop to look at shop items.");
+                Utils.myPrintln("You need to be in a shop to look at shop items.");
             }
         } else if (choice.equalsIgnoreCase("Inv")) {
             player.displayInventory();
         } else if (choice.equalsIgnoreCase("stats")) {
             player.displayStats();
         } else {
-            Util.myPrintln(choice + " cannot be shown.");
+            Utils.myPrintln(choice + " cannot be shown.");
         }
     }
 
@@ -491,12 +479,7 @@ public class MyAdventure {
             boolean playerUsedFountain = player.useFountainChoice();
             if (playerUsedFountain) {
                 currentRoom.setFountain(null);
-                Util.myPrintln("\nAs you close your eyes, a soothing sensation washes over you, and you drift into a peaceful dream...\n.....");
-                Util.myPrintln("Time seems to slow down, and you find yourself lost in a realm of tranquility.\n....");
-                Util.myPrintln("Moments pass like gentle whispers in the wind...\n...");
-                Util.myPrintln("Eventually, you awaken, finding yourself back in the room you were in before.\n..");
-                Util.myPrintln("Where the entrance to the fountain once stood, there's now only a solid stone wall, leaving you wondering if it was all just a dream.\n.");
-                Util.myPrintln("MaxHp +20!!!!");
+                Utils.printFountainText();
                 currentRoom = currentRoom.getNeighbor("south");
                 currentRoom.removeNeighbor("north");
                 return -1;
@@ -504,13 +487,13 @@ public class MyAdventure {
         }
 
         if (player.getItemCount() == 0) {
-            Util.myPrintln("You have no usable items.");
+            Utils.myPrintln("You have no usable items.");
             return -1;
         }
 
         player.displayItems();
 
-        Util.myPrint("\n> ");
+        Utils.myPrint("\n> ");
         String itemName = StdIn.readLine();
         for (Treasure item : player.getItems()) {
             // Item exits in inv
@@ -519,97 +502,74 @@ public class MyAdventure {
 
                 if (item.getID() == 0){
                     if (!inCombat) {
-                        Util.myPrintln(item.getNameWithEmoji() + " can only be rolled in combat!");
+                        Utils.myPrintln(item.getNameWithEmoji() + " can only be rolled in combat!");
                         return -1;
                     }
                     else {
                         return item.getID();
                     }
                 } else if (item.getID() == 1) {
-                    Util.myPrintln("\n\033[0;32m-------------------------------------");
-                    Util.myPrintln("|        You drank a Health        |");
-                    Util.myPrintln("|            Potion!               |");
-                    Util.myPrintln("|                                  |");
-                    Util.myPrintln("|             HP +15               |");
-                    Util.myPrintln("-------------------------------------\033[0m\n");
+                    // health potion
+                    Utils.printHealthPotText();
                     player.heals(15);
                     renderPlayerHP();
                     player.removeItemFromInventory(1);
                     return item.getID();
                 } else if (item.getID() == 2) {
-                    Util.myPrintln("\033[0;37m");
-                    Util.myPrintln("-------------------------------------");
-                    Util.myPrintln("|      You used the Scroll of      |");
-                    Util.myPrintln("|           Swifter Feet!          |");
-                    Util.myPrintln("|                                  |");
-                    Util.myPrintln("|           Agility +15            |");
-                    Util.myPrintln("-------------------------------------\n");
-                    Util.myPrintln("\033[0m");
-                    Util.myPrintln("You feel lighter on your feet...");
+                    // scroll of swifter feet
+                    Utils.printSoffText();
                     player.addAgt(15);
                     renderPlayerHPAndAgility();
                     player.removeItemFromInventory(2);
                     return item.getID();
                 } else if (item.getID() == 4) {
                     if (inCombat) {
-                        Util.myPrintln("\033[0;31m");
-                        Util.myPrintln("-------------------------------------");
-                        Util.myPrintln("|   You used the Scroll of Piercing |");
-                        Util.myPrintln("|             Precision!            |");
-                        Util.myPrintln("|                                   |");
-                        Util.myPrintln("|         Next hit is CRITICAL!     |");
-                        Util.myPrintln("-------------------------------------\n");
-                        Util.myPrintln("\033[0m");
+                        // Scroll of piercing precision
+                        Utils.printSoppText();
                         player.removeItemFromInventory(4);
                         return item.getID();
                     }
                     else {
-                        Util.myPrintln(item.getNameWithEmoji() + " can only be used in combat!");
+                        Utils.myPrintln(item.getNameWithEmoji() + " can only be used in combat!");
                         return -1;
                     }
                 } else if (item.getID() == 5) {
-                    Util.myPrintln("\033[0;34m");
-                    Util.myPrintln("-------------------------------------");
-                    Util.myPrintln("|    You consumed a Greater Health |");
-                    Util.myPrintln("|             Potion!              |");
-                    Util.myPrintln("|                                  |");
-                    Util.myPrintln("|               HP +35             |");
-                    Util.myPrintln("-------------------------------------\n");
-                    Util.myPrintln("\033[0m");
+                    // Greater health potion
+                    Utils.printGreaterHealthPotText();
                     player.heals(35);
                     renderPlayerHP();
                     player.removeItemFromInventory(5);
                     return item.getID();
                 } else if (item.getID() == 6) {
                     int luckIncrement = 15 + (StdRandom.uniformDouble() < 0.3 ? StdRandom.uniformInt(11, 26) : StdRandom.uniformInt(5, 11));
-                    Util.myPrintln("\033[0;35m");
-                    Util.myPrintln("-------------------------------------");
-                    Util.myPrintln("|     You receive Gleam's blessing  |");
-                    Util.myPrintln("|                                   |");
-                    Util.myPrintln("|            Lck +" + luckIncrement + "               |");
-                    Util.myPrintln("-------------------------------------\n");
-                    Util.myPrintln("\033[0m");
+                    Utils.myPrintln("\033[0;35m");
+                    Utils.myPrintln("-------------------------------------");
+                    Utils.myPrintln("|     You receive Gleam's blessing  |");
+                    Utils.myPrintln("|                                   |");
+                    Utils.myPrintln("|            Lck +" + luckIncrement + "               |");
+                    Utils.myPrintln("-------------------------------------\n");
+                    Utils.myPrintln("\033[0m");
                     player.addLuck(luckIncrement);
                     player.removeItemFromInventory(6);
                     return item.getID();
                     // If the item is of type "use <item> on <item>"
                 } else {
                     if (item.getID() == 3) {
-                        Util.myPrintln("Use the " + item.getNameWithEmoji() + " on which weapon?: ");
+                        Utils.myPrintln("Use the " + item.getNameWithEmoji() + " on which weapon?: ");
                         player.displayWeapons();
-                        Util.myPrint("\n> ");
+                        Utils.myPrint("\n> ");
                         String weaponName = StdIn.readLine();
                         for (int i = 0; i < player.getArsenal().size(); i++) {
                             // Player has the weapon
                             if (weaponName.equalsIgnoreCase(player.getArsenal().get(i).getName())) {
-                                Util.myPrintln("\033[0;33m");
-                                Util.myPrintln("-------------------------------------");
-                                Util.myPrintln("|   You used the Stone of Serrated  |");
-                                Util.myPrintln("|              Edge!                |");
-                                Util.myPrintln("|                                   |");
-                                Util.myPrintln("|          " + weaponName + " damage +15        |");
-                                Util.myPrintln("-------------------------------------\n");
-                                Util.myPrintln("\033[0m");
+                                Utils.myPrintln("\033[0;33m");
+                                Utils.myPrintln("-------------------------------------");
+                                Utils.myPrintln("|   You used the Stone of Serrated  |");
+                                Utils.myPrintln("|              Edge!                |");
+                                Utils.myPrintln("|                                   |");
+                                Utils.myPrintln("|          " + weaponName + " damage +15        |");
+                                Utils.myPrintln("-------------------------------------\n");
+                                Utils.myPrintln("\033[0m");
                                 player.getArsenal().get(i).addDamage(15);
                                 player.setCurrentWeapon(player.getArsenal().get(i));
                                 player.removeItemFromInventory(3);
@@ -617,13 +577,13 @@ public class MyAdventure {
                                 return item.getID();
                             }
                         }
-                        Util.myPrintln("You do not possess " + weaponName + ".");
+                        Utils.myPrintln("You do not possess " + weaponName + ".");
                         return -1;
                     }
                 }
             }
         }
-        Util.myPrintln("You cannot use a " + itemName + " or you do not possess such an item.");
+        Utils.myPrintln("You cannot use a " + itemName + " or you do not possess such an item.");
         return -1;
     }
 
@@ -634,14 +594,14 @@ public class MyAdventure {
             pots.get(0).breakPot();
             pots.remove(0);
             if (pots.size() > 1) {
-                Util.myPrintln(pots.size() + " more \uD83C\uDFFA left.");
+                Utils.myPrintln(pots.size() + " more \uD83C\uDFFA left.");
             }
             else if (pots.size() == 1) {
-                Util.myPrintln("1\uD83C\uDFFA left.");
+                Utils.myPrintln("1\uD83C\uDFFA left.");
             }
         }
         else {
-            Util.myPrintln("You cannot break a " + name + " or it does not exist here.");
+            Utils.myPrintln("You cannot break a " + name + " or it does not exist here.");
         }
     }
 
@@ -649,18 +609,18 @@ public class MyAdventure {
     public void buy() {
         // Check if the current room is a shop
         if (!(currentRoom instanceof Shop)) {
-            Util.myPrintln("You need to be in a shop to buy items.");
+            Utils.myPrintln("You need to be in a shop to buy items.");
             return;
         }
 
         if (((Shop) currentRoom).getShopItems().isEmpty() && ((Shop) currentRoom).getShopWeapons().isEmpty()) {
-            Util.myPrintln("Arrr, ye've cleaned me out, matey! Not a single item left in me shop.\n");
+            Utils.myPrintln("Arrr, ye've cleaned me out, matey! Not a single item left in me shop.\n");
             return;
         }
         // Display shop inventory
         ((Shop) currentRoom).displayShopInventory();
-        Util.myPrintln("\nAye, ye wish to buy, eh? Pick one!\n");
-        Util.myPrint("> ");
+        Utils.myPrintln("\nAye, ye wish to buy, eh? Pick one!\n");
+        Utils.myPrint("> ");
         String choice = StdIn.readLine();
 
         // Iterate through the shop items
@@ -677,7 +637,7 @@ public class MyAdventure {
                     ((Shop) currentRoom).getShopItems().remove(i);
                     ((Shop) currentRoom).getItemPrices().remove(i);
 
-                    Util.myPrintln("You bought a " + selectedItem.getNameWithEmoji() + ".");
+                    Utils.myPrintln("You bought a " + selectedItem.getNameWithEmoji() + ".");
                     // Subtract the item price from the player's gold
                     player.addGold(-itemPrice);
 
@@ -685,7 +645,7 @@ public class MyAdventure {
                     player.addItem(selectedItem);
                     return;
                 } else {
-                    Util.myPrintln("Not enough gold to buy " + selectedItem.getName() + ".");
+                    Utils.myPrintln("Not enough gold to buy " + selectedItem.getName() + ".");
                     return;
                 }
             }
@@ -703,7 +663,7 @@ public class MyAdventure {
                     ((Shop) currentRoom).getShopWeapons().remove(j);
                     ((Shop) currentRoom).getWeaponPrices().remove(j);
 
-                    Util.myPrintln("You bought a " + selectedWeapon.getName() + ".");
+                    Utils.myPrintln("You bought a " + selectedWeapon.getName() + ".");
                     // Subtract the item price from the player's gold
                     player.addGold(-weaponPrice);
 
@@ -711,14 +671,14 @@ public class MyAdventure {
                     player.addItem(selectedWeapon);
                     return;
                 } else {
-                    Util.myPrintln("Not enough gold to buy " + selectedWeapon.getName() + ".");
+                    Utils.myPrintln("Not enough gold to buy " + selectedWeapon.getName() + ".");
                     return;
                 }
             }
         }
 
         // If the item was not found in the shop's inventory
-        Util.myPrintln("Arrr, me apologies, matey, but it seems I don't have " + choice + " in stock at the moment.\n");
+        Utils.myPrintln("Arrr, me apologies, matey, but it seems I don't have " + choice + " in stock at the moment.\n");
     }
 
     /** To spin a SlotMachine. */
@@ -727,21 +687,12 @@ public class MyAdventure {
             player.playSlotMachine();
             return;
         }
-        Util.myPrintln("There is no slot machine here to spin the wheel.");
+        Utils.myPrintln("There is no slot machine here to spin the wheel.");
     }
 
     /** When player enters shop */
     public void shopEncounter() {
-        Util.myPrintln("╭──────────────────────────────────────────────────────╮");
-        Util.myPrintln("│                                                      │");
-        Util.myPrintln("│          Welcome to the " + currentRoom.getName() + "!               │");
-        Util.myPrintln("│                                                      │");
-        Util.myPrintln("│   Step into a realm of enchantment and mystery       │");
-        Util.myPrintln("│   where wonders await your discovery. Enjoy your     │");
-        Util.myPrintln("│   shopping adventure and don't forget to try         │");
-        Util.myPrintln("│   out our brand new ***SLOT MACHINE***               │");
-        Util.myPrintln("│                                                      │");
-        Util.myPrintln("╰──────────────────────────────────────────────────────╯");
+        Utils.printShopEncounterMessage();
         if (player.hasHilt()) {
             String dialogue = "Hey there, matey!\n" +
                     "I couldn't help but notice that exquisite hilt you've got there. Looks like it's seen some adventures, eh?\n" +
@@ -750,24 +701,24 @@ public class MyAdventure {
                     "Y'can spin that slot machine o'er there a buncha times with this much, don'tcha think?\n" +
                     "What say ye?";
             String[] lines = dialogue.split("\n");
-            Util.myPrintln("Merchant\uD83C\uDFA9: ");
+            Utils.myPrintln("Merchant\uD83C\uDFA9: ");
             for (String line : lines) {
-                Util.myPrintln("\t" + line);
+                Utils.myPrintln("\t" + line);
             }
             boolean playerDoesNotChooseValidOption = true;
             while (playerDoesNotChooseValidOption) {
-                Util.myPrintln("----------------------------------------------------------");
-                Util.myPrintln("The merchant is offering you 100\uD83E\uDE99 for the hilt!");
-                Util.myPrintln("----------------------------------------------------------\n");
-                Util.myPrintln("Take it?[yes/no]");
-                Util.myPrint("> ");
+                Utils.myPrintln("----------------------------------------------------------");
+                Utils.myPrintln("The merchant is offering you 100\uD83E\uDE99 for the hilt!");
+                Utils.myPrintln("----------------------------------------------------------\n");
+                Utils.myPrintln("Take it?[yes/no]");
+                Utils.myPrint("> ");
                 String choice = StdIn.readLine();
                 if (choice.equalsIgnoreCase("y") || choice.equalsIgnoreCase("yes")) {
                     if (player.getCurrentWeapon().getID() == 101) {
-                        Util.myPrintln("\nYou need to equip something else to sell the hilt!");
+                        Utils.myPrintln("\nYou need to equip something else to sell the hilt!");
                         return;
                     }
-                    Util.myPrintln("\nYou traded your hilt for 100\uD83E\uDE99!");
+                    Utils.myPrintln("\nYou traded your hilt for 100\uD83E\uDE99!");
                     player.addGold(100);
                     player.removeWeaponFromInventory(101);
                     ((Shop) currentRoom).getShopWeapons().add(new Weapon("The Twilight's Glimmer", 0.8, 50, "a sword shrouded in mystery, its darkened blade adorned with ancient runes.\n" +
@@ -776,19 +727,19 @@ public class MyAdventure {
                     ((Shop) currentRoom).getWeaponPrices().add(999);
                     playerDoesNotChooseValidOption = false;
                 } else if (choice.equalsIgnoreCase("n") || choice.equalsIgnoreCase("no")) {
-                    Util.myPrintln("Arrr, really? I thought for sure ye'd be interested in me offer. Well,...\n");
+                    Utils.myPrintln("Arrr, really? I thought for sure ye'd be interested in me offer. Well,...\n");
                     playerDoesNotChooseValidOption = false;
                 } else {
-                    Util.myPrintln("Uhh... what was that?");
+                    Utils.myPrintln("Uhh... what was that?");
                 }
             }
         }
 
         // No hilt interaction start here
-        Util.myPrintln("Why don't ye take a gander around me humble shop?\n"
+        Utils.myPrintln("Why don't ye take a gander around me humble shop?\n"
                 + "Ye might find somethin' else that tickles yer fancy.\n");
 
-        Util.myPrintln("[> show shop] to shop for items");
+        Utils.myPrintln("[> show shop] to shop for items");
     }
 
     /** Player enters turn-based combat */
@@ -802,7 +753,7 @@ public class MyAdventure {
         // Grom in room
         if (currentRoom.getMonster().getName().equals("Grom")) {
             gromEncounter = true;
-            Util.myPrintln("\nTip: Grom's swings are lethal but he is very slow. You will ~~likely~~ dodge his attacks!");
+            Utils.myPrintln("\nTip: Grom's swings are lethal but he is very slow. You will ~~likely~~ dodge his attacks!");
         }
 
         // spider in room
@@ -816,33 +767,16 @@ public class MyAdventure {
         // boss fight
         if (currentRoomMonster.getName().equals("Duskborne Archlich")) {
             bossEncounter = true;
-            Util.printBossImage();
-            Util.myPrintln("\nYOU HAVE ENGAGED IN COMBAT WITH " + currentRoomMonster.getName().toUpperCase() + ", THERE IS TRULY NO GOING BACK!\n");
-            Util.myPrintln("-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-\n");
+            Utils.printBossImage();
+            Utils.myPrintln("\nYOU HAVE ENGAGED IN COMBAT WITH " + currentRoomMonster.getName().toUpperCase() + ", THERE IS TRULY NO GOING BACK!\n");
+            Utils.myPrintln("-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-\n");
             if (player.hasHilt()) {
                 try {
                     Thread.sleep(5000);
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
                 }
-                Util.myPrintln("As you face the boss, a sudden realization dawns upon you.");
-                Util.myPrintln("You gaze upon the hilt you once thought to be unassuming,");
-                Util.myPrintln("now pulsating with an otherworldly energy.");
-                Util.myPrintln("The words of legends echo in your mind as you grasp the hilt tightly,");
-                Util.myPrintln("feeling the dormant power awakening within.");
-                Util.myPrintln("");
-                Util.myPrintln("\"The Twilight's Glimmer,\" you whisper in awe,");
-                Util.myPrintln("as the darkness around you seems to part,");
-                Util.myPrintln("revealing the true nature of your once humble weapon.");
-                Util.myPrintln("Its darkened blade, adorned with ancient runes,");
-                Util.myPrintln("now radiates with an ethereal glow,");
-                Util.myPrintln("harnessing the powers of twilight itself.");
-                Util.myPrintln("");
-                Util.myPrintln("With newfound understanding, you wield the sword,");
-                Util.myPrintln("feeling the surge of unmatched precision and grace");
-                Util.myPrintln("bestowed upon you by the legendary weapon.");
-                Util.myPrintln("It is not merely a hilt but a key to unlocking your destiny,");
-                Util.myPrintln("guiding you towards victory in the looming battle against the boss.");
+                Utils.printHiltIntoTTGMessage();
                 player.addItem(new Weapon("The Twilight's Glimmer", 0.6, 50, "a sword shrouded in mystery, its darkened blade adorned with ancient runes.\n" +
                         "Legend whispers of its true nature hidden within an unassuming hilt, waiting for the hands of fate to unlock its potential.\n" +
                         "When wielded, it emits a faint, ethereal glow, rumored to harness the powers of twilight itself, granting its bearer unmatched precision and grace in battle.", 999));
@@ -852,16 +786,16 @@ public class MyAdventure {
 
         }
         else {
-            Util.myPrintln("\nYou have engaged in combat with " + currentRoomMonster.getName() + ", there's no going back!\n");
+            Utils.myPrintln("\nYou have engaged in combat with " + currentRoomMonster.getName() + ", there's no going back!\n");
         }
         // player has higher agility
         if (player.getAgility() > currentRoom.getMonster().getAgility()) {
-            Util.myPrintln("You are faster, you move first!\n");
+            Utils.myPrintln("You are faster, you move first!\n");
             playerTakesTheLead = true;
         }
         // monster has higher agility
         else {
-            Util.myPrintln("\nYou are slower, " + currentRoomMonster.getName() + " moves first!\n");
+            Utils.myPrintln("\nYou are slower, " + currentRoomMonster.getName() + " moves first!\n");
             playerTakesTheLead = false;
         }
 
@@ -871,19 +805,19 @@ public class MyAdventure {
             if (bossEncounter) {
                 bossTurnCounter += 1;
                 if (player.isDead() || bossTurnCounter == 6) {
-                    Util.myPrintln("\nYOU DIED FROM THE LICH'S CURSE. YOUR SOUL CEASES TO EXIST!");
+                    Utils.myPrintln("\nYOU DIED FROM THE LICH'S CURSE. YOUR SOUL CEASES TO EXIST!");
                     player.takesDamage(player.getDef() + player.getCurrentHP());
                     renderPlayerHP();
-                    Util.myPrintln("☠".repeat(23));
-                    Util.myPrintln("☠" + " " + "YOU HAVE PERISHED! GAME OVER..." + " " + "☠");
-                    Util.myPrintln("☠".repeat(23));
-                    Util.myPrintlnAtGameOver();
+                    Utils.myPrintln("☠".repeat(23));
+                    Utils.myPrintln("☠" + " " + "YOU HAVE PERISHED! GAME OVER..." + " " + "☠");
+                    Utils.myPrintln("☠".repeat(23));
+                    Utils.myPrintlnAtGameOver();
                     System.exit(0);
                 }
-                Util.myPrintln("\nNOTE: YOU ARE INFLICTED WITH THE ARCHLICH'S CURSE!");
-                Util.myPrintln("CURSE DESCRIPTION: ");
-                Util.myPrintln("YOU ONLY HAVE " + (6 - bossTurnCounter) + " TURNS TO DEFEAT HIM BEFORE YOU PERISH!");
-                Util.myPrintln("YOU SOUL WILL DIMINISH PER TURN! YOU WILL START LOSING HEALTH!");
+                Utils.myPrintln("\nNOTE: YOU ARE INFLICTED WITH THE ARCHLICH'S CURSE!");
+                Utils.myPrintln("CURSE DESCRIPTION: ");
+                Utils.myPrintln("YOU ONLY HAVE " + (6 - bossTurnCounter) + " TURNS TO DEFEAT HIM BEFORE YOU PERISH!");
+                Utils.myPrintln("YOU SOUL WILL DIMINISH PER TURN! YOU WILL START LOSING HEALTH!");
                 if (bossTurnCounter > 0) {
                     player.takesDamage(player.getDef() + 7);
                     renderPlayerHP();
@@ -898,8 +832,8 @@ public class MyAdventure {
                 // check for valid combat command
                 while (true) {
                     currentPlayerAttack = player.getCurrentWeapon().getDamage();
-                    Util.myPrintln("What will you do? [> strike] to attack");
-                    Util.myPrint("> ");
+                    Utils.myPrintln("What will you do? [> strike] to attack");
+                    Utils.myPrint("> ");
                     String choice = StdIn.readLine();
                         // player uses a combat item mid-battle
                     if (choice.trim().equalsIgnoreCase("use")) {
@@ -928,17 +862,17 @@ public class MyAdventure {
                 currentPlayerAttack += player.getDamageAfterCritChance();
                 // player attacks
                 currentRoomMonster.takesDamage(currentPlayerAttack);
-                Util.myPrintln(currentRoomMonster.getName() + " took " + Math.round(currentPlayerAttack) + " damage!");
+                Utils.myPrintln(currentRoomMonster.getName() + " took " + Math.round(currentPlayerAttack) + " damage!");
                 renderMonsterHPAndAttackAndAgility();
                 // check monster is dead
                 if (currentRoomMonster.isDead()) {
-                    Util.myPrintln(currentRoomMonster.getName() + " has fallen!");
+                    Utils.myPrintln(currentRoomMonster.getName() + " has fallen!");
                     // Grom drops a chestplate when he dies
                     if (currentRoomMonster.getName().equals("Grom")) {
                         r10.setArmor(new Armor("Black Iron Chestplate",
                                         "covered in mud, but looks as sturdy as a troll",
                                         20));
-                        Util.myPrintln("The heavy chestplate on Grom's chest shrinks as it falls on the ground.");
+                        Utils.myPrintln("The heavy chestplate on Grom's chest shrinks as it falls on the ground.");
                     }
 
                     currentRoom.setMonster(null);
@@ -950,30 +884,22 @@ public class MyAdventure {
                     // monster attack lands and entering Grom's room gives bonus dodge chance
                     if (!player.dodges(gromEncounter) ) {
                         player.takesDamage(currentRoomMonster.getDamage());
-                        Util.myPrintln(currentRoomMonster.getName() + " attacked! You took " + (int) (currentRoomMonster.getDamage() - player.getDef()) + " damage!");
+                        Utils.myPrintln(currentRoomMonster.getName() + " attacked! You took " + (int) (currentRoomMonster.getDamage() - player.getDef()) + " damage!");
                         renderPlayerHP();
                     }
                     // player dodges!
                     else {
-                        Util.myPrintln("You dodged that attack. Lucky!");
+                        Utils.myPrintln("You dodged that attack. Lucky!");
                         // debuff related death
                         if (bossEncounter && player.isDead()) {
-                            Util.myPrintln("YOU DIED FROM THE LICH'S CURSE. YOUR SOUL CEASES TO EXIST!");
-                            Util.myPrintln("☠".repeat(23));
-                            Util.myPrintln("☠" + " " + "YOU HAVE PERISHED! GAME OVER..." + " " + "☠");
-                            Util.myPrintln("☠".repeat(23));
-                            Util.myPrintlnAtGameOver();
-                            System.exit(0);
+                            Utils.myPrintln("YOU DIED FROM THE LICH'S CURSE. YOUR SOUL CEASES TO EXIST!");
+                            Utils.printDeathMessageAndQuit();
                         }
 
                     }
                     // check player is dead
                     if (player.isDead()) {
-                        Util.myPrintln("☠".repeat(23));
-                        Util.myPrintln("☠" + " " + "YOU HAVE PERISHED! GAME OVER..." + " " + "☠");
-                        Util.myPrintln("☠".repeat(23));
-                        Util.myPrintlnAtGameOver();
-                        System.exit(0);
+                        Utils.printDeathMessageAndQuit();
                     }
                 }
             }
@@ -987,8 +913,8 @@ public class MyAdventure {
                 }
                 // spider encounter
                 if (spiderEncounter) {
-                    Util.myPrintln("\nTHE SPIDER CHARGES AT YOU AT HYPERSPEED. YOU DID NOT REACT IN TIME!");
-                    Util.myPrintln(currentRoomMonster.getName() + " DIED A EXPLODING MESS OF PUS! YOU HAVE BEEN BURNT BY ACID!");
+                    Utils.myPrintln("\nTHE SPIDER CHARGES AT YOU AT HYPERSPEED. YOU DID NOT REACT IN TIME!");
+                    Utils.myPrintln(currentRoomMonster.getName() + " DIED A EXPLODING MESS OF PUS! YOU HAVE BEEN BURNT BY ACID!");
                     player.takesDamage(currentRoomMonster.getDamage());
                     renderPlayerHP();
                     currentRoom.setMonster(null);
@@ -998,32 +924,24 @@ public class MyAdventure {
                 // monster attack lands
                 if (!player.dodges(gromEncounter)) {
                     player.takesDamage(currentRoomMonster.getDamage());
-                    Util.myPrintln(currentRoomMonster.getName() + " attacked! You took " + (int) (currentRoomMonster.getDamage() - player.getDef()) + " damage!");
+                    Utils.myPrintln(currentRoomMonster.getName() + " attacked! You took " + (int) (currentRoomMonster.getDamage() - player.getDef()) + " damage!");
                     renderPlayerHP();
                 } else { // player dodges
-                    Util.myPrintln("You dodged that attack. Lucky!");
+                    Utils.myPrintln("You dodged that attack. Lucky!");
                     // debuff related death
                     if (bossEncounter && player.isDead()) {
-                        Util.myPrintln("YOU DIED FROM THE LICH'S CURSE. YOUR SOUL CEASES TO EXIST!");
-                        Util.myPrintln("☠".repeat(23));
-                        Util.myPrintln("☠" + " " + "YOU HAVE PERISHED! GAME OVER..." + " " + "☠");
-                        Util.myPrintln("☠".repeat(23));
-                        Util.myPrintlnAtGameOver();
-                        System.exit(0);
+                        Utils.myPrintln("YOU DIED FROM THE LICH'S CURSE. YOUR SOUL CEASES TO EXIST!");
+                        Utils.printDeathMessageAndQuit();
                     }
                 }
                 // check player is dead
                 if (player.isDead()) {
-                    Util.myPrintln("☠".repeat(23));
-                    Util.myPrintln("☠" + " " + "YOU HAVE PERISHED! GAME OVER..." + " " + "☠");
-                    Util.myPrintln("☠".repeat(23));
-                    Util.myPrintlnAtGameOver();
-                    System.exit(0);
+                    Utils.printDeathMessageAndQuit();
                 } else { // player survives attack
                     while (true) {
                         currentPlayerAttack = player.getCurrentWeapon().getDamage();
-                        Util.myPrintln("What will you do? [> strike] to attack");
-                        Util.myPrint("> ");
+                        Utils.myPrintln("What will you do? [> strike] to attack");
+                        Utils.myPrint("> ");
                         String choice = StdIn.readLine();
                         // player uses a combat item mid-battle
                         if (choice.trim().equalsIgnoreCase("use")) {
@@ -1051,11 +969,11 @@ public class MyAdventure {
                     currentPlayerAttack += player.getDamageAfterCritChance();
                     // player attacks
                     currentRoomMonster.takesDamage(currentPlayerAttack);
-                    Util.myPrintln(currentRoomMonster.getName() + " took " + Math.round(currentPlayerAttack) + " damage!");
+                    Utils.myPrintln(currentRoomMonster.getName() + " took " + Math.round(currentPlayerAttack) + " damage!");
                     renderMonsterHPAndAttackAndAgility();
                     // check monster is dead
                     if (currentRoomMonster.isDead()) {
-                        Util.myPrintln(currentRoomMonster.getName() + " has fallen!");
+                        Utils.myPrintln(currentRoomMonster.getName() + " has fallen!");
                         currentRoom.setMonster(null);
                         inCombat = false;
                         return;
@@ -1066,10 +984,10 @@ public class MyAdventure {
     }
     public void renderPlayerHPAndAgility() {
         // Render player HP
-        Util.myPrintln("Player HP: " + Math.round(Math.max(0, player.getCurrentHP())) + " HP [" + "❤".repeat(playerCalculateHeartWidth()) + " ".repeat(10 - playerCalculateHeartWidth()) + "]");
+        Utils.myPrintln("Player HP: " + Math.round(Math.max(0, player.getCurrentHP())) + " HP [" + "❤".repeat(playerCalculateHeartWidth()) + " ".repeat(10 - playerCalculateHeartWidth()) + "]");
 
         // Render player agility
-        Util.myPrintln("Agility: " + (int) player.getAgility() + "\uD83E\uDDB6");
+        Utils.myPrintln("Agility: " + (int) player.getAgility() + "\uD83E\uDDB6");
     }
 
     public void renderMonsterHPAndAttackAndAgility() {
@@ -1079,25 +997,25 @@ public class MyAdventure {
         }
 
         // Render monster HP
-        Util.myPrintln(currentRoom.getMonster().getName() + " HP: " + Math.round(Math.max(0, currentRoom.getMonster().getArmor())) + " HP [" + "█".repeat(monsterCalculateHeartWidth()) + " ".repeat(10 - monsterCalculateHeartWidth()) + "]");
+        Utils.myPrintln(currentRoom.getMonster().getName() + " HP: " + Math.round(Math.max(0, currentRoom.getMonster().getArmor())) + " HP [" + "█".repeat(monsterCalculateHeartWidth()) + " ".repeat(10 - monsterCalculateHeartWidth()) + "]");
 
         // Render monster attack
-        Util.myPrintln("Attack: " + (int) currentRoom.getMonster().getDamage() + "⚔️️");
+        Utils.myPrintln("Attack: " + (int) currentRoom.getMonster().getDamage() + "⚔️️");
 
         // Render monster agility
-        Util.myPrintln("Agility: " + (int) currentRoom.getMonster().getAgility() + "\uD83E\uDDB6\n");
+        Utils.myPrintln("Agility: " + (int) currentRoom.getMonster().getAgility() + "\uD83E\uDDB6\n");
     }
 
     public void renderPlayerHP() {
         // Render player HP
-        Util.myPrintln("\n---------------");
-        Util.myPrintln("Player HP: " + Math.round(Math.max(0, player.getCurrentHP())) + " HP [" + "❤".repeat(playerCalculateHeartWidth()) + " ".repeat(10 - playerCalculateHeartWidth()) + "]");
-        Util.myPrintln("---------------\n");
+        Utils.myPrintln("\n---------------");
+        Utils.myPrintln("Player HP: " + Math.round(Math.max(0, player.getCurrentHP())) + " HP [" + "❤".repeat(playerCalculateHeartWidth()) + " ".repeat(10 - playerCalculateHeartWidth()) + "]");
+        Utils.myPrintln("---------------\n");
     }
 
     public void renderPlayerAttack() {
         // Render player attack
-        Util.myPrintln("Attack: " + (int) player.getCurrentWeapon().getDamage() + "⚔️️\n️");
+        Utils.myPrintln("Attack: " + (int) player.getCurrentWeapon().getDamage() + "⚔️️\n️");
     }
 
     public int playerCalculateHeartWidth() {
@@ -1118,12 +1036,10 @@ public class MyAdventure {
 
     public void grogDies() {
         // Handle the case when Grog dies
-        Util.myPrintln("Grog slips and falls while charging at you. His dagger slices his throat and tumbles into the next room.");
-        Util.myPrintln("Grog dies a pathetic death...");
+        Utils.myPrintln("Grog slips and falls while charging at you. His dagger slices his throat and tumbles into the next room.");
+        Utils.myPrintln("Grog dies a pathetic death...");
         currentRoom.getMonster().setArmor(0); // Set Grog's armor to 0
         renderMonsterHPAndAttackAndAgility(); // Render updated monster stats
         currentRoom.setMonster(null); // Remove Grog from the room
     }
-
-
 }
